@@ -1,0 +1,54 @@
+{
+  "accuracy": 0.999,
+  "precision": 1.0,
+  "recall": 0.9833,
+  "f1_score": 0.9916,
+  "auc_roc": 1.0,
+  "confusion_matrix": [
+    [
+      2820,
+      0
+    ],
+    [
+      3,
+      177
+    ]
+  ],
+  "feature_importance": {
+    "amount": 0.10242531895173375,
+    "time_seconds": 0.0011772742579835643,
+    "distance_from_home": 0.056031388324290915,
+    "transaction_frequency": 0.09515319599853907,
+    "merchant_risk_score": 0.2558670556573498,
+    "hour_of_day": 0.007015835306509678,
+    "day_of_week": 0.0005425782948485134,
+    "merchant_category": 0.013738256117741819,
+    "cardholder_age": 0.0015314049143902917,
+    "card_age_years": 0.0026433680390500975,
+    "velocity_24h": 0.1762080734030843,
+    "amount_deviation": 0.23175506349430144,
+    "is_international": 0.01155830857817975,
+    "is_online": 0.0043031871176976,
+    "pin_used": 0.04004969154429944
+  },
+  "feature_columns": [
+    "amount",
+    "time_seconds",
+    "distance_from_home",
+    "transaction_frequency",
+    "merchant_risk_score",
+    "hour_of_day",
+    "day_of_week",
+    "merchant_category",
+    "cardholder_age",
+    "card_age_years",
+    "velocity_24h",
+    "amount_deviation",
+    "is_international",
+    "is_online",
+    "pin_used"
+  ],
+  "training_samples": 12000,
+  "test_samples": 3000,
+  "fraud_ratio": 0.06
+}

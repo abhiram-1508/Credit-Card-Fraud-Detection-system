@@ -61,6 +61,30 @@ html {
     scroll-behavior: smooth;
 }
 
+.hidden {
+    display: none !important;
+}
+
+.admin-only, .user-only {
+    display: none !important;
+}
+
+body.role-admin .admin-only {
+    display: block;
+}
+
+body.role-admin .nav-item.admin-only {
+    display: flex;
+}
+
+body.role-user .user-only {
+    display: block;
+}
+
+body.role-user .nav-item.user-only {
+    display: flex;
+}
+
 body {
     font-family: var(--font-main);
     background: var(--bg-primary);
@@ -1282,4 +1306,222 @@ body {
     .confusion-matrix {
         max-width: 260px;
     }
+}
+/* ─── Login Overlay ─────────────────────────────────────── */
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(5, 5, 15, 0.8);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    animation: zoomIn 0.5s var(--transition-spring);
+}
+
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.login-header .logo {
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.login-header h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.login-header p {
+    color: var(--text-secondary);
+}
+
+.login-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.login-hints {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-glass);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* ─── Notifications ─────────────────────────────────────── */
+.notification-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notification {
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+    animation: slideInRight 0.4s var(--transition-spring);
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.notification.success {
+    border-left: 4px solid var(--accent-emerald);
+}
+
+.notification.error {
+    border-left: 4px solid var(--accent-rose);
+}
+
+/* ─── Breadcrumb & Role Badge ──────────────────────────── */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-role-badge {
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--accent-indigo);
+    color: white;
+}
+
+body.role-admin .user-role-badge {
+    background: var(--accent-purple);
+}
+
+/* ─── User Info Header ──────────────────────────────────── */
+.user-info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 16px;
+    border-right: 1px solid var(--border-glass);
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.user-acc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+/* ─── Logout Button ─────────────────────────────────────── */
+.btn-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    border-radius: var(--radius-md);
+    color: var(--accent-rose);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-logout:hover {
+    background: rgba(244, 63, 94, 0.15);
+    border-color: var(--accent-rose);
+}
+
+/* ─── Transaction Custom ─────────────────────────────────── */
+.transaction-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+}
+
+.protection-info-card {
+    height: fit-content;
+}
+
+.protection-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.shield-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-emerald);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.protection-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.protection-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-secondary);
+}
+
+.protection-list li::before {
+    content: '✓';
+    color: var(--accent-emerald);
+    font-weight: bold;
 }

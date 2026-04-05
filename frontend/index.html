@@ -20,8 +20,50 @@
         <div class="bg-grid"></div>
     </div>
 
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-card glass-card">
+            <div class="login-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
+                            <path d="M14 2L2 8V20L14 26L26 20V8L14 2Z" stroke="url(#grad_login)" stroke-width="2" fill="none"/>
+                            <path d="M14 10L8 13V19L14 22L20 19V13L14 10Z" fill="url(#grad_login)" opacity="0.6"/>
+                            <defs>
+                                <linearGradient id="grad_login" x1="0" y1="0" x2="28" y2="28">
+                                    <stop offset="0%" stop-color="#6366f1"/>
+                                    <stop offset="100%" stop-color="#06b6d4"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+                <h2>Welcome to FraudShield</h2>
+                <p>Login to your account to continue</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" placeholder="e.g. alice@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary login-btn">Login</button>
+            </form>
+            <div class="login-hints">
+                <p>Try: <strong>ananya@example.com</strong> (user) or <strong>admin@fraudshield.ai</strong> (admin)</p>
+                <p>Password for all: <strong>password123</strong> (admin is just <strong>admin</strong>)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
     <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar hidden" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
                 <div class="logo-icon">
@@ -44,41 +86,43 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 <span>Dashboard</span>
             </a>
-            <a href="#" class="nav-item" data-section="analyze" id="nav-analyze">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20.66 7A10 10 0 0 0 17 3.34"/></svg>
-                <span>Analyze</span>
+            <a href="#" class="nav-item" data-section="make-transaction" id="nav-make-transaction">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1L12 23M1 12L23 12" stroke-linecap="round"/><path d="M17 5L22 10L17 15" stroke-linecap="round"/><path d="M7 19L2 14L7 9" stroke-linecap="round"/></svg>
+                <span>Send Money</span>
             </a>
             <a href="#" class="nav-item" data-section="transactions" id="nav-transactions">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                <span>Transactions</span>
+                <span>History</span>
             </a>
-            <a href="#" class="nav-item" data-section="model" id="nav-model">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                <span>Model Info</span>
-            </a>
+            <div id="admin-nav-container"></div>
         </nav>
         <div class="sidebar-footer">
-            <div class="status-badge">
-                <span class="pulse-dot"></span>
-                <span>System Active</span>
-            </div>
+            <button class="btn-logout" id="btn-logout">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Sign Out</span>
+            </button>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content" id="main-content">
+    <main class="main-content hidden" id="main-content">
         <!-- Header -->
         <header class="top-header">
             <div class="header-left">
                 <button class="menu-toggle" id="menu-toggle">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
-                <h1 class="page-title" id="page-title">Dashboard</h1>
+                <div class="breadcrumb">
+                    <span class="user-role-badge" id="user-role-display">User</span>
+                    <h1 class="page-title" id="page-title">Dashboard</h1>
+                </div>
             </div>
             <div class="header-right">
-                <div class="header-badge live-badge">
-                    <span class="pulse-dot"></span>
-                    LIVE
+                <div class="user-info-header">
+                    <div class="user-details">
+                        <span class="user-name" id="display-user-name">—</span>
+                        <span class="user-acc" id="display-user-acc">—</span>
+                    </div>
                 </div>
                 <div class="header-time" id="header-time"></div>
             </div>
@@ -88,17 +132,24 @@
         <section class="content-section active" id="section-dashboard">
             <!-- Stats Cards -->
             <div class="stats-grid">
+                <!-- Balance Card (User Only) -->
+                <div class="stat-card user-only" id="stat-balance">
+                    <div class="stat-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Current Balance</span>
+                        <span class="stat-value" id="stat-balance-val">₹0</span>
+                    </div>
+                </div>
+
                 <div class="stat-card" id="stat-total">
                     <div class="stat-icon blue">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                     </div>
                     <div class="stat-info">
-                        <span class="stat-label">Total Transactions</span>
+                        <span class="stat-label" id="label-total-txns">Total Transactions</span>
                         <span class="stat-value" id="stat-total-val">—</span>
-                    </div>
-                    <div class="stat-trend up">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-                        12.5%
                     </div>
                 </div>
                 <div class="stat-card" id="stat-fraud">
@@ -106,48 +157,29 @@
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     </div>
                     <div class="stat-info">
-                        <span class="stat-label">Fraud Detected</span>
+                        <span class="stat-label" id="label-fraud-detected">Fraud Blocked</span>
                         <span class="stat-value" id="stat-fraud-val">—</span>
                     </div>
-                    <div class="stat-trend down">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/></svg>
-                        3.2%
-                    </div>
                 </div>
-                <div class="stat-card" id="stat-accuracy">
-                    <div class="stat-icon green">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    </div>
-                    <div class="stat-info">
-                        <span class="stat-label">Model Accuracy</span>
-                        <span class="stat-value" id="stat-accuracy-val">—</span>
-                    </div>
-                    <div class="stat-trend up">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-                        1.8%
-                    </div>
-                </div>
-                <div class="stat-card" id="stat-protected">
+                
+                <div class="stat-card admin-only">
                     <div class="stat-icon purple">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                     </div>
                     <div class="stat-info">
-                        <span class="stat-label">Amount Protected</span>
-                        <span class="stat-value" id="stat-protected-val">—</span>
-                    </div>
-                    <div class="stat-trend up">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-                        24.1%
+                        <span class="stat-label">System Health</span>
+                        <span class="stat-value">Active</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts Row -->
-            <div class="charts-grid">
+
+            <!-- Charts Row (Admin Only) -->
+            <div class="charts-grid admin-only">
                 <div class="glass-card chart-card">
                     <div class="card-header">
-                        <h3>Fraud by Time of Day</h3>
-                        <span class="badge">24h</span>
+                        <h3>Fraud Trends</h3>
+                        <span class="badge">24h Radar</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="chart-hourly"></canvas>
@@ -155,8 +187,8 @@
                 </div>
                 <div class="glass-card chart-card">
                     <div class="card-header">
-                        <h3>Fraud by Category</h3>
-                        <span class="badge">All Time</span>
+                        <h3>Sector Risk Analysis</h3>
+                        <span class="badge">AI Insights</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="chart-category"></canvas>
@@ -164,33 +196,11 @@
                 </div>
             </div>
 
-            <!-- Second Charts Row -->
-            <div class="charts-grid">
-                <div class="glass-card chart-card">
-                    <div class="card-header">
-                        <h3>Weekly Trend</h3>
-                        <span class="badge">7 Days</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="chart-weekly"></canvas>
-                    </div>
-                </div>
-                <div class="glass-card chart-card">
-                    <div class="card-header">
-                        <h3>Fraud by Amount Range</h3>
-                        <span class="badge">Distribution</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="chart-amount"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Alerts -->
+            <!-- Recent Activity -->
             <div class="glass-card">
                 <div class="card-header">
-                    <h3>🚨 Recent Fraud Alerts</h3>
-                    <button class="btn-outline btn-sm" id="btn-view-all-alerts">View All</button>
+                    <h3 id="recent-activity-title">Activity Feed</h3>
+                    <button class="btn-outline btn-sm" id="btn-view-all-activity">View History</button>
                 </div>
                 <div class="alerts-list" id="alerts-list">
                     <!-- Populated by JS -->
@@ -198,50 +208,29 @@
             </div>
         </section>
 
-        <!-- ═══ ANALYZE SECTION ═══ -->
-        <section class="content-section" id="section-analyze">
-            <div class="analyze-container">
-                <div class="glass-card analyze-card">
+        <!-- ═══ MAKE TRANSACTION SECTION (User Only) ═══ -->
+        <section class="content-section" id="section-make-transaction">
+            <div class="transaction-container">
+                <div class="glass-card transaction-card">
                     <div class="card-header">
-                        <h3>🔍 Analyze Transaction</h3>
-                        <span class="badge badge-cyan">AI Powered</span>
+                        <h3>💸 Secure Money Transfer</h3>
+                        <span class="badge badge-cyan">Protected by AI</span>
                     </div>
-                    <p class="card-desc">Enter transaction details below to check for potential fraud using our trained AI model.</p>
+                    <p class="card-desc">Transfer funds securely. Our AI monitors every transaction in real-time to protect you from fraud.</p>
                     
-                    <form id="predict-form" class="predict-form">
+                    <form id="transfer-form" class="predict-form">
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="input-amount">Transaction Amount ($)</label>
-                                <input type="number" id="input-amount" step="0.01" min="0" placeholder="e.g. 250.00" required>
+                                <label for="tx-amount">Amount (₹)</label>
+                                <input type="number" id="tx-amount" step="0.01" min="1" placeholder="e.g. 500.00" required>
                             </div>
                             <div class="form-group">
-                                <label for="input-distance">Distance from Home (km)</label>
-                                <input type="number" id="input-distance" step="0.1" min="0" placeholder="e.g. 45.5" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-frequency">Transaction Frequency</label>
-                                <input type="number" id="input-frequency" min="0" placeholder="e.g. 3" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-merchant-risk">Merchant Risk Score (0-1)</label>
-                                <input type="number" id="input-merchant-risk" step="0.01" min="0" max="1" placeholder="e.g. 0.35" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-hour">Hour of Day (0-23)</label>
-                                <input type="number" id="input-hour" min="0" max="23" placeholder="e.g. 14" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-day">Day of Week (0=Mon, 6=Sun)</label>
-                                <input type="number" id="input-day" min="0" max="6" placeholder="e.g. 2" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-category">Merchant Category (0-9)</label>
-                                <select id="input-category" required>
-                                    <option value="">Select category</option>
+                                <label for="tx-category">Category</label>
+                                <select id="tx-category" required>
                                     <option value="0">Grocery & Supermarket</option>
                                     <option value="1">Gas Station</option>
                                     <option value="2">Restaurant & Dining</option>
-                                    <option value="3">Online Shopping</option>
+                                    <option value="3" selected>Online Shopping</option>
                                     <option value="4">Travel & Airlines</option>
                                     <option value="5">Entertainment</option>
                                     <option value="6">Electronics</option>
@@ -251,109 +240,69 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="input-age">Cardholder Age</label>
-                                <input type="number" id="input-age" min="18" max="100" placeholder="e.g. 35" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-card-age">Card Age (years)</label>
-                                <input type="number" id="input-card-age" step="0.1" min="0" placeholder="e.g. 3.5" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-velocity">Transactions in 24h</label>
-                                <input type="number" id="input-velocity" min="0" placeholder="e.g. 5" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-deviation">Amount Deviation (σ)</label>
-                                <input type="number" id="input-deviation" step="0.1" placeholder="e.g. 1.2" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-time">Time (seconds since epoch)</label>
-                                <input type="number" id="input-time" min="0" placeholder="e.g. 50000" required>
+                                <label for="tx-city">Recipient Location / City</label>
+                                <input type="text" id="tx-city" placeholder="e.g. Mumbai" required>
                             </div>
                         </div>
 
                         <div class="form-toggles">
                             <label class="toggle-label">
-                                <input type="checkbox" id="input-international">
+                                <input type="checkbox" id="tx-international">
                                 <span class="toggle-switch"></span>
-                                International Transaction
+                                International
                             </label>
                             <label class="toggle-label">
-                                <input type="checkbox" id="input-online" checked>
+                                <input type="checkbox" id="tx-online" checked>
                                 <span class="toggle-switch"></span>
-                                Online Transaction
-                            </label>
-                            <label class="toggle-label">
-                                <input type="checkbox" id="input-pin" checked>
-                                <span class="toggle-switch"></span>
-                                PIN Used
+                                Online
                             </label>
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn-primary" id="btn-predict">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                Analyze Transaction
-                            </button>
-                            <button type="button" class="btn-outline" id="btn-fill-sample">
-                                Fill Sample Data
+                            <button type="submit" class="btn-primary" id="btn-submit-tx">
+                                Complete Transfer
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <!-- Result Panel -->
-                <div class="glass-card result-card hidden" id="result-card">
-                    <div class="result-header" id="result-header">
-                        <div class="result-icon" id="result-icon"></div>
-                        <div>
-                            <h3 id="result-title">Analysis Result</h3>
-                            <p id="result-subtitle"></p>
+                <!-- AI Protection Info -->
+                <div class="glass-card protection-info-card">
+                    <div class="protection-header">
+                        <div class="shield-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         </div>
+                        <h4>AI FraudShield Active</h4>
                     </div>
-                    <div class="result-body">
-                        <div class="result-meters">
-                            <div class="meter-card">
-                                <span class="meter-label">Fraud Probability</span>
-                                <div class="meter-bar">
-                                    <div class="meter-fill" id="meter-fraud"></div>
-                                </div>
-                                <span class="meter-value" id="meter-fraud-val">0%</span>
-                            </div>
-                            <div class="meter-card">
-                                <span class="meter-label">Legitimate Probability</span>
-                                <div class="meter-bar">
-                                    <div class="meter-fill legit" id="meter-legit"></div>
-                                </div>
-                                <span class="meter-value" id="meter-legit-val">0%</span>
-                            </div>
-                        </div>
-                        <div class="risk-badge-container">
-                            <span class="risk-badge" id="risk-badge">—</span>
-                        </div>
-                        <div class="feature-importance-mini" id="feature-importance-mini"></div>
-                    </div>
+                    <ul class="protection-list">
+                        <li>Real-time behavioral analysis</li>
+                        <li>Location anomaly detection</li>
+                        <li>Transaction pattern matching</li>
+                        <li>Automated fraud blocking</li>
+                    </ul>
                 </div>
             </div>
         </section>
+
+        <div id="admin-sections-container" class="admin-only"></div>
 
         <!-- ═══ TRANSACTIONS SECTION ═══ -->
         <section class="content-section" id="section-transactions">
             <div class="glass-card">
                 <div class="card-header">
-                    <h3>Transaction History</h3>
+                    <h3 id="history-title">Transaction History</h3>
                     <div class="filter-group">
-                        <button class="filter-btn active" data-filter="all" id="filter-all">All</button>
-                        <button class="filter-btn" data-filter="fraud" id="filter-fraud">Fraud</button>
-                        <button class="filter-btn" data-filter="legitimate" id="filter-legit">Legitimate</button>
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="fraud">Blocked</button>
+                        <button class="filter-btn" data-filter="legitimate">Success</button>
                     </div>
                 </div>
                 <div class="table-wrapper">
                     <table class="transactions-table" id="transactions-table">
                         <thead>
                             <tr>
-                                <th>Transaction ID</th>
-                                <th>Cardholder</th>
+                                <th>ID</th>
+                                <th class="admin-only">Cardholder</th>
                                 <th>Amount</th>
                                 <th>Category</th>
                                 <th>Location</th>
@@ -370,34 +319,6 @@
             </div>
         </section>
 
-        <!-- ═══ MODEL INFO SECTION ═══ -->
-        <section class="content-section" id="section-model">
-            <div class="model-grid">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <h3>🤖 Model Performance</h3>
-                        <span class="badge badge-green">Random Forest</span>
-                    </div>
-                    <div class="model-metrics" id="model-metrics">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
-                <div class="glass-card">
-                    <div class="card-header">
-                        <h3>📊 Confusion Matrix</h3>
-                    </div>
-                    <div class="confusion-matrix" id="confusion-matrix"></div>
-                </div>
-                <div class="glass-card full-width">
-                    <div class="card-header">
-                        <h3>🏆 Feature Importance</h3>
-                    </div>
-                    <div class="chart-container chart-tall">
-                        <canvas id="chart-features"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <script src="app.js"></script>
