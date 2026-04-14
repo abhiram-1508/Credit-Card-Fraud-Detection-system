@@ -13,6 +13,12 @@ import os
 from datetime import datetime, timedelta
 import random
 import uuid
+import sqlite3
+
+def get_db_connection():
+    conn = sqlite3.connect('users.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='/static')
 CORS(app)
@@ -64,51 +70,7 @@ MERCHANT_CATEGORIES = {
 }
 
 
-# ─── Mock Database ──────────────────────────────────────────
-
-# Users with default balance of ₹10,000
-users = {
-    "user1": {
-        "id": "user1",
-        "name": "Ananya Sharma",
-        "email": "ananya@example.com",
-        "password": "password123",
-        "account_number": "ACC-8829-1001",
-        "balance": 10000.0,
-        "role": "user",
-        "age": 28,
-        "card_age": 2.5
-    },
-    "user2": {
-        "id": "user2",
-        "name": "Rahul Verma",
-        "email": "rahul@example.com",
-        "password": "password123",
-        "account_number": "ACC-3341-2002",
-        "balance": 10000.0,
-        "role": "user",
-        "age": 42,
-        "card_age": 5.1
-    },
-    "user3": {
-        "id": "user3",
-        "name": "Vikram Malhotra",
-        "email": "vikram@example.com",
-        "password": "password123",
-        "account_number": "ACC-5529-3003",
-        "balance": 10000.0,
-        "role": "user",
-        "age": 35,
-        "card_age": 1.2
-    },
-    "admin1": {
-        "id": "admin1",
-        "name": "System Admin",
-        "email": "admin@fraudshield.ai",
-        "password": "admin",
-        "role": "admin"
-    }
-}
+# ─── SQLite Integration ──────────────────────────────────────
 
 # Transaction store
 recent_transactions = []
@@ -116,15 +78,23 @@ recent_transactions = []
 def generate_sample_transactions(n=50):
     """Generate sample recent transactions for the dashboard."""
     transactions = []
-    user_ids = ["user1", "user2", "user3"]
+    
+    conn = get_db_connection()
+    user_rows = conn.execute("SELECT id, name FROM users WHERE role = 'user' LIMIT 5").fetchall()
+    conn.close()
+    
+    if not user_rows:
+        return []
+    
     cities = [
         "Mumbai", "Delhi", "Bengaluru", "Hyderabad", "Chennai",
         "Pune", "Kolkata", "Ahmedabad", "Jaipur", "Surat"
     ]
     
     for i in range(n):
-        u_id = random.choice(user_ids)
-        user = users[u_id]
+        u = random.choice(user_rows)
+        u_id = u['id']
+        u_name = u['name']
         
         is_fraud = random.random() < 0.08
         
@@ -143,7 +113,7 @@ def generate_sample_transactions(n=50):
         transactions.append({
             'id': f'TXN-{10000 + i}',
             'user_id': u_id,
-            'cardholder': user['name'],
+            'cardholder': u_name,
             'amount': amount,
             'category': MERCHANT_CATEGORIES[cat_idx],
             'city': random.choice(cities),
@@ -209,30 +179,34 @@ def login():
     email = data.get('email')
     password = data.get('password')
     
-    for user_id, user in users.items():
-        if user['email'] == email and user['password'] == password:
-            # In a real app, generate a JWT. Here we just return user info.
-            return jsonify({
-                'success': True,
-                'user': {
-                    'id': user['id'],
-                    'name': user['name'],
-                    'email': user['email'],
-                    'role': user['role']
-                }
-            })
+    conn = get_db_connection()
+    user = conn.execute('SELECT * FROM users WHERE email = ? AND password = ?', (email, password)).fetchone()
+    conn.close()
+    
+    if user:
+        return jsonify({
+            'success': True,
+            'user': {
+                'id': user['id'],
+                'name': user['name'],
+                'email': user['email'],
+                'role': user['role']
+            }
+        })
     
     return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
 
 
 @app.route('/api/user/profile/<user_id>', methods=['GET'])
 def get_profile(user_id):
-    if user_id not in users:
+    conn = get_db_connection()
+    user = conn.execute('SELECT id, name, email, account_number, balance, role, age, card_age FROM users WHERE id = ?', (user_id,)).fetchone()
+    conn.close()
+    
+    if not user:
         return jsonify({'error': 'User not found'}), 404
     
-    user = users[user_id].copy()
-    user.pop('password')
-    return jsonify(user)
+    return jsonify(dict(user))
 
 
 @app.route('/api/transaction/create', methods=['POST'])
@@ -241,13 +215,17 @@ def create_transaction():
     data = request.get_json()
     user_id = data.get('user_id')
     
-    if user_id not in users:
+    conn = get_db_connection()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (user_id,)).fetchone()
+    
+    if not user:
+        conn.close()
         return jsonify({'error': 'User not found'}), 404
     
-    user = users[user_id]
     amount = float(data.get('amount', 0))
     
     if user['balance'] < amount:
+        conn.close()
         return jsonify({'error': 'Insufficient balance'}), 400
     
     # Prepare features for prediction
@@ -260,8 +238,8 @@ def create_transaction():
         'hour_of_day': datetime.now().hour,
         'day_of_week': datetime.now().weekday(),
         'merchant_category': int(data.get('merchant_category', 0)),
-        'cardholder_age': user.get('age', 30),
-        'card_age_years': user.get('card_age', 2.0),
+        'cardholder_age': user['age'],
+        'card_age_years': user['card_age'],
         'velocity_24h': float(data.get('velocity_24h', 1)),
         'amount_deviation': float(data.get('amount_deviation', 0.5)),
         'is_international': int(data.get('is_international', 0)),
@@ -292,13 +270,17 @@ def create_transaction():
     recent_transactions.insert(0, new_txn)
     
     if not is_fraud:
-        user['balance'] -= amount
+        new_balance = user['balance'] - amount
+        conn.execute('UPDATE users SET balance = ? WHERE id = ?', (new_balance, user_id))
+        conn.commit()
+        conn.close()
         return jsonify({
             'success': True,
             'message': 'Transaction successful',
             'transaction': new_txn
         })
     else:
+        conn.close()
         return jsonify({
             'success': False,
             'message': 'Transaction BLOCKED! Fraudulent activity detected.',
@@ -311,16 +293,11 @@ def get_customers():
     if not is_admin():
         return jsonify({'error': 'Unauthorized! Admin access required.'}), 403
 
-    cust_list = []
-    for uid, u in users.items():
-        if u['role'] == 'user':
-            cust_list.append({
-                'id': u['id'],
-                'name': u['name'],
-                'email': u['email'],
-                'account_number': u['account_number'],
-                'balance': u['balance']
-            })
+    conn = get_db_connection()
+    users_db = conn.execute("SELECT id, name, email, account_number, balance FROM users WHERE role = 'user'").fetchall()
+    conn.close()
+    
+    cust_list = [dict(u) for u in users_db]
     return jsonify(cust_list)
 
 
@@ -391,11 +368,17 @@ def get_stats():
         }
     else:
         # User specific stats
+        conn = get_db_connection()
+        user_db = conn.execute('SELECT balance FROM users WHERE id = ?', (user_id,)).fetchone()
+        conn.close()
+        
+        user_balance = user_db['balance'] if user_db else 0.0
+        
         u_txns = [t for t in recent_transactions if t['user_id'] == user_id]
         stats = {
             'total_transactions': len(u_txns),
             'fraud_detected': len([t for t in u_txns if t['is_fraud']]),
-            'balance': users[user_id]['balance'],
+            'balance': user_balance,
             'model_accuracy': metrics['accuracy'],
             'alerts_today': len([t for t in u_txns if t['is_fraud'] and 'datetime' in t and t['datetime'].startswith(datetime.now().strftime('%Y-%m-%d'))])
         }
@@ -492,5 +475,5 @@ def health():
 
 if __name__ == '__main__':
     load_resources()
-    print("\n🚀 Credit Card Fraud Detection API running on http://localhost:5000")
+    print("\n=== Credit Card Fraud Detection API running on http://localhost:5000 ===")
     app.run(debug=True, host='0.0.0.0', port=5000)
