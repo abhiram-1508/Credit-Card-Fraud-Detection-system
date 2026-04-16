@@ -1,0 +1,112 @@
+[
+    {
+        "id": "admin1",
+        "name": "System Admin",
+        "email": "admin@fraudshield.ai",
+        "password": "admin",
+        "account_number": "ACC-0000-0000",
+        "balance": 0.0,
+        "role": "admin",
+        "age": 45,
+        "card_age": 10.0
+    },
+    {
+        "id": "user1",
+        "name": "Abhiram",
+        "email": "abhiram@example.com",
+        "password": "password123",
+        "account_number": "ACC-8829-1001",
+        "balance": 15000.0,
+        "role": "user",
+        "age": 28,
+        "card_age": 2.5
+    },
+    {
+        "id": "user2",
+        "name": "Gangadhar",
+        "email": "Gangadhar@example.com",
+        "password": "password123",
+        "account_number": "ACC-3341-2002",
+        "balance": 10000.0,
+        "role": "user",
+        "age": 42,
+        "card_age": 5.1
+    },
+    {
+        "id": "user3",
+        "name": "Kusum",
+        "email": "kusum@example.com",
+        "password": "password123",
+        "account_number": "ACC-5529-3003",
+        "balance": 8500.0,
+        "role": "user",
+        "age": 35,
+        "card_age": 1.2
+    },
+    {
+        "id": "user4",
+        "name": "Likhith",
+        "email": "likhith@example.com",
+        "password": "password123",
+        "account_number": "ACC-1122-4004",
+        "balance": 22000.0,
+        "role": "user",
+        "age": 31,
+        "card_age": 3.8
+    },
+    {
+        "id": "user5",
+        "name": "Rohan Das",
+        "email": "rohan@example.com",
+        "password": "password123",
+        "account_number": "ACC-4455-5005",
+        "balance": 5000.0,
+        "role": "user",
+        "age": 25,
+        "card_age": 0.5
+    },
+    {
+        "id": "user6",
+        "name": "Kavita Reddy",
+        "email": "kavita@example.com",
+        "password": "password123",
+        "account_number": "ACC-6677-6006",
+        "balance": 35000.0,
+        "role": "user",
+        "age": 50,
+        "card_age": 8.1
+    },
+    {
+        "id": "user7",
+        "name": "Amit Patel",
+        "email": "amit@example.com",
+        "password": "password123",
+        "account_number": "ACC-8899-7007",
+        "balance": 12500.0,
+        "role": "user",
+        "age": 38,
+        "card_age": 6.0
+    },
+    {
+        "id": "user8",
+        "name": "Sneha Iyer",
+        "email": "sneha@example.com",
+        "password": "password123",
+        "account_number": "ACC-2233-8008",
+        "balance": 18000.0,
+        "role": "user",
+        "age": 29,
+        "card_age": 4.2
+    },
+    {
+        "id": "user9",
+        "name": "Pooja Desai",
+        "email": "pooja@example.com",
+        "password": "password123",
+        "account_number": "ACC-9900-9009",
+        "balance": 9200.0,
+        "role": "user",
+        "age": 33,
+        "card_age": 2.0
+    }
+]

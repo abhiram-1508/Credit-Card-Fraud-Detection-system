@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered Credit Card Fraud Detection Dashboard - Real-time monitoring and analysis of fraudulent transactions.">
+    <title>FraudShield — AI Fraud Detection Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+        <div class="bg-orb orb-3"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-card glass-card">
+            <div class="login-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
+                            <path d="M14 2L2 8V20L14 26L26 20V8L14 2Z" stroke="url(#grad_login)" stroke-width="2" fill="none"/>
+                            <path d="M14 10L8 13V19L14 22L20 19V13L14 10Z" fill="url(#grad_login)" opacity="0.6"/>
+                            <defs>
+                                <linearGradient id="grad_login" x1="0" y1="0" x2="28" y2="28">
+                                    <stop offset="0%" stop-color="#6366f1"/>
+                                    <stop offset="100%" stop-color="#06b6d4"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+                <h2>Welcome to FraudShield</h2>
+                <p>Login to your account to continue</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" placeholder="e.g. abhiram@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary login-btn">Login</button>
+            </form>
+            <div class="login-hints">
+                <p>Try: <strong>abhiram@example.com</strong> (user) or <strong>admin@fraudshield.ai</strong> (admin)</p>
+                <p>Password for all: <strong>password123</strong> (admin is just <strong>admin</strong>)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar hidden" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2L2 8V20L14 26L26 20V8L14 2Z" stroke="url(#grad1)" stroke-width="2" fill="none"/>
+                        <path d="M14 10L8 13V19L14 22L20 19V13L14 10Z" fill="url(#grad1)" opacity="0.6"/>
+                        <defs>
+                            <linearGradient id="grad1" x1="0" y1="0" x2="28" y2="28">
+                                <stop offset="0%" stop-color="#6366f1"/>
+                                <stop offset="100%" stop-color="#06b6d4"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="logo-text">FraudShield</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard" id="nav-dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-section="make-transaction" id="nav-make-transaction">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1L12 23M1 12L23 12" stroke-linecap="round"/><path d="M17 5L22 10L17 15" stroke-linecap="round"/><path d="M7 19L2 14L7 9" stroke-linecap="round"/></svg>
+                <span>Send Money</span>
+            </a>
+            <a href="#" class="nav-item" data-section="transactions" id="nav-transactions">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span>History</span>
+            </a>
+            <div id="admin-nav-container"></div>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="btn-logout">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content hidden" id="main-content">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="breadcrumb">
+                    <span class="user-role-badge" id="user-role-display">User</span>
+                    <h1 class="page-title" id="page-title">Dashboard</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="user-info-header">
+                    <div class="user-details">
+                        <span class="user-name" id="display-user-name">—</span>
+                        <span class="user-acc" id="display-user-acc">—</span>
+                    </div>
+                </div>
+                <div class="header-time" id="header-time"></div>
+            </div>
+        </header>
+
+        <!-- ═══ DASHBOARD SECTION ═══ -->
+        <section class="content-section active" id="section-dashboard">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <!-- Balance Card (User Only) -->
+                <div class="stat-card user-only" id="stat-balance">
+                    <div class="stat-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Current Balance</span>
+                        <span class="stat-value" id="stat-balance-val">₹0</span>
+                    </div>
+                </div>
+
+                <div class="stat-card" id="stat-total">
+                    <div class="stat-icon blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label" id="label-total-txns">Total Transactions</span>
+                        <span class="stat-value" id="stat-total-val">—</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="stat-fraud">
+                    <div class="stat-icon red">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label" id="label-fraud-detected">Fraud Blocked</span>
+                        <span class="stat-value" id="stat-fraud-val">—</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card admin-only">
+                    <div class="stat-icon purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">System Health</span>
+                        <span class="stat-value">Active</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Charts Row (Admin Only) -->
+            <div class="charts-grid admin-only">
+                <div class="glass-card chart-card">
+                    <div class="card-header">
+                        <h3>Fraud Trends</h3>
+                        <span class="badge">24h Radar</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-hourly"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card chart-card">
+                    <div class="card-header">
+                        <h3>Sector Risk Analysis</h3>
+                        <span class="badge">AI Insights</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-category"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <h3 id="recent-activity-title">Activity Feed</h3>
+                    <button class="btn-outline btn-sm" id="btn-view-all-activity">View History</button>
+                </div>
+                <div class="alerts-list" id="alerts-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ MAKE TRANSACTION SECTION (User Only) ═══ -->
+        <section class="content-section" id="section-make-transaction">
+            <div class="transaction-container">
+                <div class="glass-card transaction-card">
+                    <div class="card-header">
+                        <h3>💸 Secure Money Transfer</h3>
+                        <span class="badge badge-cyan">Protected by AI</span>
+                    </div>
+                    <p class="card-desc">Transfer funds securely. Our AI monitors every transaction in real-time to protect you from fraud.</p>
+                    
+                    <form id="transfer-form" class="predict-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="tx-amount">Amount (₹)</label>
+                                <input type="number" id="tx-amount" step="0.01" min="1" placeholder="e.g. 500.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-category">Category</label>
+                                <select id="tx-category" required>
+                                    <option value="0">Grocery & Supermarket</option>
+                                    <option value="1">Gas Station</option>
+                                    <option value="2">Restaurant & Dining</option>
+                                    <option value="3" selected>Online Shopping</option>
+                                    <option value="4">Travel & Airlines</option>
+                                    <option value="5">Entertainment</option>
+                                    <option value="6">Electronics</option>
+                                    <option value="7">Cash Advance</option>
+                                    <option value="8">Jewelry & Luxury</option>
+                                    <option value="9">Money Transfer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-city">Recipient Location / City</label>
+                                <input type="text" id="tx-city" placeholder="e.g. Mumbai" required>
+                            </div>
+                        </div>
+
+                        <div class="form-toggles">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="tx-international">
+                                <span class="toggle-switch"></span>
+                                International
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="tx-online" checked>
+                                <span class="toggle-switch"></span>
+                                Online
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" id="btn-submit-tx">
+                                Complete Transfer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- AI Protection Info -->
+                <div class="glass-card protection-info-card">
+                    <div class="protection-header">
+                        <div class="shield-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h4>AI FraudShield Active</h4>
+                    </div>
+                    <ul class="protection-list">
+                        <li>Real-time behavioral analysis</li>
+                        <li>Location anomaly detection</li>
+                        <li>Transaction pattern matching</li>
+                        <li>Automated fraud blocking</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div id="admin-sections-container" class="admin-only"></div>
+
+        <!-- ═══ TRANSACTIONS SECTION ═══ -->
+        <section class="content-section" id="section-transactions">
+            <div class="glass-card">
+                <div class="card-header">
+                    <h3 id="history-title">Transaction History</h3>
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="fraud">Blocked</button>
+                        <button class="filter-btn" data-filter="legitimate">Success</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table class="transactions-table" id="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th class="admin-only">Cardholder</th>
+                                <th>Amount</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-body">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
